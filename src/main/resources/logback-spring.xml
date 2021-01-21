@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration debug="true" scan="true" scanPeriod="48 hours">
+	<property name="log-path" value="/appl/shopping/services"/> 
+	<property name="log-filename" value="kart"/>
+	<property name="archive" value="${log-path}/archive"/>
+	<timestamp key="timestamp-by-second" datePattern="yyyyMMdd"/>
+
+	<appender name="Console-Appender" class="ch.qos.logback.core.ConsoleAppender">
+		<layout>
+			<pattern>
+				[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n
+			</pattern>
+		</layout>
+	</appender>
+	
+ 	<appender name="SpringBoot-File-Appender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${log-path}/${log-filename}.log</file>
+	    <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+      		<fileNamePattern>${archive}/${log-filename}.%i.log.zip</fileNamePattern>
+			<minIndex>1</minIndex>
+      		<maxIndex>50</maxIndex>
+    	</rollingPolicy>
+    	<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+     		 <maxFileSize>10MB</maxFileSize>
+		</triggeringPolicy>
+		
+		<encoder>
+			<pattern>[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n</pattern>
+			<outputPatternAsHeader>true</outputPatternAsHeader>
+		</encoder>
+	</appender>	
+	<logger name="com.shopping.kart" level="INFO" additivity="false">
+		<appender-ref ref="SpringBoot-File-Appender" />
+		<appender-ref ref="Console-Appender" />
+	</logger>
+		
+	<logger name="org.springframework" level="INFO" additivity="false">
+		<appender-ref ref="SpringBoot-File-Appender" />
+		<appender-ref ref="Console-Appender" />
+	</logger>
+	
+	<logger name="org.hibernate" level="INFO" additivity="false">
+		<appender-ref ref="SpringBoot-File-Appender" />
+		<appender-ref ref="Console-Appender" />
+	</logger>
+
+	<root>
+		<appender-ref ref="SpringBoot-File-Appender" />
+		<appender-ref ref="Console-Appender" />
+	</root>
+
+</configuration>
